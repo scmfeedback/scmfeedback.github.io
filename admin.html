@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Übersicht</title>
+    <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Feedback Übersicht</h1>
+        <ul id="feedbackList"></ul>
+    </div>
+
+    <script>
+        // Firebase-Initialisierung
+        const firebaseConfig = {
+    apiKey: "AIzaSyBeMDyZEjkI4eKKp7MO-zQCF4tf-ET7pzw",
+    authDomain: "feedback-41136.firebaseapp.com",
+    databaseURL: "https://feedback-41136-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "feedback-41136",
+    storageBucket: "feedback-41136.firebasestorage.app",
+    messagingSenderId: "835973165549",
+    appId: "1:835973165549:web:cc015aa84a5d0526bc37e4",
+    measurementId: "G-4FFC7D3QFF"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Feedback abrufen und anzeigen
+        const feedbackList = document.getElementById('feedbackList');
+
+        db.ref('feedbacks').on('value', (snapshot) => {
+            feedbackList.innerHTML = '';
+            snapshot.forEach((childSnapshot) => {
+                const feedback = childSnapshot.val();
+                const listItem = document.createElement('li');
+                listItem.textContent = `[${new Date(feedback.timestamp).toLocaleString()}] ${feedback.service}: ${feedback.feedback}`;
+                feedbackList.appendChild(listItem);
+            });
+        });
+    </script>
+</body>
+</html>
