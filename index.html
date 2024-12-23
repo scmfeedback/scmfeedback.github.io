@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Feedback</title>
+    <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Feedback zu Social Media Accounts</h1>
+        <form id="feedbackForm">
+            <label for="service">Wählen Sie den Dienst:</label>
+            <select id="service" name="service" required>
+                <option value="" disabled selected>Bitte wählen...</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Snapchat">Snapchat</option>
+            </select>
+            <div id="feedbackField" style="display: none;">
+                <label for="feedback">Was lief falsch oder könnte verbessert werden?</label>
+                <textarea id="feedback" name="feedback" rows="5" required></textarea>
+            </div>
+            <div id="captchaField" style="display: none;">
+                <label for="captcha">Geben Sie den Code ein:</label>
+                <input type="text" id="captcha" name="captcha" placeholder="12345" required>
+            </div>
+            <button type="submit">Absenden</button>
+        </form>
+    </div>
+
+    <script>
+        // Firebase-Initialisierung
+        const firebaseConfig = {
+    apiKey: "AIzaSyBeMDyZEjkI4eKKp7MO-zQCF4tf-ET7pzw",
+    authDomain: "feedback-41136.firebaseapp.com",
+    databaseURL: "https://feedback-41136-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "feedback-41136",
+    storageBucket: "feedback-41136.firebasestorage.app",
+    messagingSenderId: "835973165549",
+    appId: "1:835973165549:web:cc015aa84a5d0526bc37e4",
+    measurementId: "G-4FFC7D3QFF"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Dynamisches Anzeigen der Felder
+        const serviceSelect = document.getElementById('service');
+        const feedbackField = document.getElementById('feedbackField');
+        const captchaField = document.getElementById('captchaField');
+
+        serviceSelect.addEventListener('change', () => {
+            feedbackField.style.display = 'block';
+            captchaField.style.display = 'block';
+        });
+
+        // Feedback absenden
+        const feedbackForm = document.getElementById('feedbackForm');
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const service = serviceSelect.value;
+            const feedback = document.getElementById('feedback').value;
+
+            db.ref('feedbacks').push({
+                service,
+                feedback,
+                timestamp: Date.now()
+            });
+
+            alert('Feedback erfolgreich übermittelt!');
+            feedbackForm.reset();
+            feedbackField.style.display = 'none';
+            captchaField.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
